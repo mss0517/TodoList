@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Todo List</title>
+  <link rel="stylesheet" href="./bootstrap.css">
+  <link rel="stylesheet" href="./bootstrap-icons.css">
+</head>
+
+<body>
+  <div class="container" id="app">
+    <div class="mt-5">
+      <h1>Todo List</h1>
+      <div class="input-group my-4">
+        <input type="text" class="form-control" v-model="newTodoInput">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" @click="addTodo">Add</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <h3 class="mb-3">Todo List</h3>
+          <div v-for="item in uncompletedTodos">
+            <div class="form-check" :key="item.id">
+              <input type="checkbox" class="form-check-input" :id="item.id" v-model="item.completed">
+              <label class="form-check-label" :for="item.id">
+                {{ item.title }}
+              </label>
+              <i class="bi bi-trash" @click="removeTodo(item)"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <h3 class="mb-3">Done List</h3>
+          <div v-for="item in completedTodos">
+            <div class="form-check" :key="item.id">
+              <input type="checkbox" class="form-check-input" :id="item.id" v-model="item.completed">
+              <label class="form-check-label" :for="item.id">
+                {{ item.title }}
+              </label>
+              <i class="bi bi-trash" @click="removeTodo(item)"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./jquery.js"></script>
+  <script src="./popper.js"></script>
+  <script src="./bootstrap.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    const app = {
+      data() {
+        return {
+          newTodoInput: '',
+          todos: [
+            { id: 'todo1', title: '項目一', completed: false },
+            { id: 'todo2', title: '項目二', completed: false },
+            { id: 'todo3', title: '項目三', completed: true }
+          ]
+        }
+      },
+      methods: {
+        addTodo() {
+          var value = this.newTodoInput.trim();
+          if (!value) {
+            return;
+          }
+          this.todos.push({ id: Date.now(), title: value, completed: false });
+          this.newTodoInput = '';
+        },
+        removeTodo(todo) {
+          var vm = this;
+          var todoIndex = vm.todos.findIndex(item => {
+            return todo.id === item.id;
+          });
+          this.todos.splice(todoIndex, 1);
+        }
+      },
+      computed: {
+        uncompletedTodos() {
+          var todosList = [];
+          this.todos.forEach(item => {
+            if (!item.completed) {
+              todosList.push(item);
+            }
+          });
+          return todosList;
+        },
+        completedTodos() {
+          var todosList = [];
+          this.todos.forEach(item => {
+            if (item.completed) {
+              todosList.push(item);
+            }
+          });
+          return todosList;
+        }
+      }
+    }
+    Vue.createApp(app).mount('#app')
+  </script>
+</body>
+
+</html>
